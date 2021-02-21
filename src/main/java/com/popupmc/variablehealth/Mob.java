@@ -121,7 +121,7 @@ public class Mob {
     }
 
     public int getNonBossLevel() {
-        return random.nextInt(100) + 1;
+        return random.nextInt(200) + 1;
     }
 
     public double scale(double val, int level, boolean increaseOnly, boolean resistance) {
