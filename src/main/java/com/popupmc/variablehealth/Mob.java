@@ -39,10 +39,29 @@ public class Mob {
 
         // Retrieve or create level level
         int level;
-        if(hasLevel(livingEntity))
+        boolean setup = false;
+        if(hasLevel(livingEntity)) {
             level = retrieveLevel(livingEntity);
+            setup = true;
+        }
         else
-            level = (isBoss) ? getBossLevel() : getNonBossLevel();
+            level = getLevel();
+
+        // Setup new mob
+        if(!setup)
+            setupNewMob(livingEntity, isBoss, level);
+
+        // Display title if boss
+        if(isBoss)
+            displayBossTitle(entity, level);
+    }
+
+    public void setupNewMob(Entity entity, boolean isBoss, int level) {
+        if(!(entity instanceof LivingEntity))
+            return;
+
+        // Get living instance
+        LivingEntity livingEntity = (LivingEntity)entity;
 
         // Scale slime body to indicate level
         // Bad idea, slimes never die, they keep multiplying, the server crashes
@@ -74,19 +93,10 @@ public class Mob {
             zombieSetup((Zombie) entity, level);
 
         // If above 175 it's learned how to be silent
-        if(level > 175)
+        if(level > percent_75)
             entity.setSilent(true);
 
-        // If it's above 150, set arrows up to a max of 5 depending on level
-        // to indicate resilence
-        if(level > 150) {
-            int tmp = level - 150;
-            livingEntity.setArrowsInBody(tmp / 10);
-            livingEntity.setArrowsStuck(tmp / 10);
-        }
-
-        // Entities greater than level 75 can pickup items
-        livingEntity.setCanPickupItems(level > 75);
+        livingEntity.setCanPickupItems(level > percent_50);
 
         // Scale Health
         scaleHealth(livingEntity, level, isBoss);
@@ -97,10 +107,6 @@ public class Mob {
         // Store Level onto entity
         if(!hasLevel(livingEntity))
             storeLevel(livingEntity, level);
-
-        // Display title if boss
-        if(isBoss)
-            displayBossTitle(entity, level);
     }
 
     public Double getDamageToOthers(Entity entity, double damage) {
@@ -128,60 +134,46 @@ public class Mob {
 //    }
 
     public void creeperSetup(Creeper creeper, int level) {
-        // There's a max level of 200 for creepers, I want a max radius of 10 blocks
-        // So I divide level by 20 to get correct amount
-        int explosionRadius = level / 20;
+        int explosionRadius = level / creeperExplosionMaxRadius;
         creeper.setExplosionRadius(explosionRadius);
 
-        // I want a max fuse ticks of 5 seconds so divide by 2 to get that
-        int maxFuseTicks = level / 2;
+        int maxFuseTicks = level / creeperFuseMaxTime;
         creeper.setMaxFuseTicks(maxFuseTicks);
 
-        // Power creeper only if level is greater than 100
-        creeper.setPowered(level > 100);
+        creeper.setPowered(level > percent_75);
     }
 
     public void llamaSetup(Llama llama, int level) {
-        // There's a max level of 200 for llamas, I want a max strength of 4
-        // So I divide level by 50 to get correct amount
-        int strength = (level / 50) + 1; // 1-5
+        int strength = (level / llamaStrengthMax) + 1; // 1-5
         llama.setStrength(strength);
     }
 
     public void phantomSetup(Phantom phantom, int level) {
-        // There's a max level of 200 for phantoms, I want a max size of 50 (out of 64)
-        // So I divide level by 4 to get correct amount
-        int size = level / 4;
+        int size = level / phantomSizeMax;
         phantom.setSize(size);
     }
 
     public void hoglinSetup(Hoglin hoglin, int level) {
-        // Hoglins below level 100 can be hunted
-        hoglin.setIsAbleToBeHunted(level < 100);
+        hoglin.setIsAbleToBeHunted(level < percent_50);
     }
 
     public void piglinSetup(Piglin piglin, int level) {
-        // Piglins above level 100 can be hunted
-        piglin.setIsAbleToHunt(level > 100);
+        piglin.setIsAbleToHunt(level > percent_50);
     }
 
     public void snowmanSetup(Snowman snowman, int level) {
-        // Snowmen below level 100 are in derp mode
-        snowman.setDerp(level < 100);
+        snowman.setDerp(level < percent_50);
     }
 
     public void vindicatorSetup(Vindicator vindicator, int level) {
-        // Vindactors above level 100 are enemy to most
-        vindicator.setJohnny(level > 100);
+        vindicator.setJohnny(level > percent_50);
     }
 
     public void zombieSetup(Zombie zombie, int level) {
-        // Zombies above level 100 can break doors
-        zombie.setCanBreakDoors(level > 100);
+        zombie.setCanBreakDoors(level > percent_50);
 
-        // If it would normally burn in day, it won't if it's above level 100
         if(zombie.shouldBurnInDay())
-            zombie.setShouldBurnInDay(level < 100);
+            zombie.setShouldBurnInDay(level < percent_50);
     }
 
     public Double getDamageToSelf(Entity entity, double damage) {
@@ -195,10 +187,10 @@ public class Mob {
         int level = retrieveLevel(livingEntity);
 
         // Is Boss
-        // boolean isBoss = bossMobs.containsKey(entity.getType());
+//         boolean isBoss = bossMobs.containsKey(entity.getType());
 
         // Scale damage, prevent it from scaling below 0.10
-        double ret = scale(damage, level, false, true);
+        double ret = scale(damage, level, true, true);
         ret = Math.max(ret, 0.10d);
 
         return ret;
@@ -224,17 +216,40 @@ public class Mob {
         return (int)scale(exp, level, isBoss, false);
     }
 
-    public int getBossLevel() {
-        return random.nextInt(100) + 1;
-    }
-
-    public int getNonBossLevel() {
-        return random.nextInt(200) + 1;
+    public int getLevel() {
+        return random.nextInt(maxLevel) + 1;
     }
 
     public double scale(double val, int level, boolean increaseOnly, boolean resistance) {
-        int percentChange = random.nextInt(5) + 1;
-        percentChange *= level;
+
+        // Used to countdown levels left
+        // Ideally we want a random number for each level
+        // But that's computationally expensive
+        // So instead we do short bursts, this keeps track of that
+        int levelLeft = level;
+
+        // final product
+        int percentChange = 0;
+
+        // Begin looping our predefined granularity
+        for(int i = 0; i < scaleGranularityCount; i++) {
+
+            // Get a number between 1 and our max scale
+            int tmp = random.nextInt(scaleMax) + 1;
+
+            // If the short burst is greater than levels left, don't do a short burst, do the remainder levels
+            // and stop here
+            if(scaleGranularityAmount > levelLeft) {
+                percentChange += (tmp * levelLeft);
+                break;
+            }
+            // Otherwise do the full short burst and subtract burst done from levels left
+            else {
+                percentChange += (tmp * scaleGranularityAmount);
+                levelLeft -= scaleGranularityAmount;
+            }
+        }
+
         if(increaseOnly)
             percentChange += 100;
 
@@ -249,7 +264,7 @@ public class Mob {
 
     public void scaleHealth(LivingEntity livingEntity, int level, boolean isBoss) {
         // Get Scaled Health, scale up only if boss
-        double health = livingEntity.getHealth();
+        double health = livingEntity.getMaxHealth();
         health = scale(health, level, isBoss, false);
 
         // Minecraft Limit
@@ -318,6 +333,25 @@ public class Mob {
 
     public static final String metadataKeyPrefix = "com.popupmc.variablehealth.VariableHealth:";
     public static final String metadataKeyLevel = metadataKeyPrefix + "level";
+
+    // Max Level
+    public static final int maxLevel = 100;
+
+    // public static final int percent_25 = (int)(maxLevel * 0.25);
+    public static final int percent_50 = (int)(maxLevel * 0.50);
+    public static final int percent_75 = (int)(maxLevel * 0.75);
+
+    // We do math ceil because these are division factors and we want the highest number if decimal
+    // Higher number means lower division result
+    // Some of these have a specific range they can't go over
+    public static final int creeperExplosionMaxRadius = (int)Math.ceil((double)maxLevel / 8); // 10 block radius
+    public static final int creeperFuseMaxTime = (int)Math.ceil((double)maxLevel / (20 * 5)); // 5 second fuse
+    public static final int llamaStrengthMax = (int)Math.ceil((double)maxLevel / 4); // 4 Strength
+    public static final int phantomSizeMax = (int)Math.ceil((double)maxLevel / 32); // Up to size 32
+
+    public static final int scaleMax = (int)Math.ceil(200 / (double)maxLevel); // Up to 250% max scaling
+    public static final int scaleGranularityCount = 15; // 10 granularity count in scaling
+    public static final int scaleGranularityAmount = maxLevel / scaleGranularityCount; // How many in each granularity
 
     public final VariableHealth plugin;
 }
