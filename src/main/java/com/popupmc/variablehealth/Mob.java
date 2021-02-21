@@ -1,9 +1,6 @@
 package com.popupmc.variablehealth;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -47,8 +44,55 @@ public class Mob {
         else
             level = (isBoss) ? getBossLevel() : getNonBossLevel();
 
+        // Scale slime body to indicate level
+        // Bad idea, slimes never die, they keep multiplying, the server crashes
+//        if(entity instanceof Slime)
+//            scaleBody((Slime)entity, level);
+
+        if(entity instanceof Creeper)
+            creeperSetup((Creeper)entity, level);
+
+        if(entity instanceof Llama)
+            llamaSetup((Llama)entity, level);
+
+        if(entity instanceof Phantom)
+            phantomSetup((Phantom) entity, level);
+
+        if(entity instanceof Hoglin)
+            hoglinSetup((Hoglin) entity, level);
+
+        if(entity instanceof Piglin)
+            piglinSetup((Piglin) entity, level);
+
+        if(entity instanceof Snowman)
+            snowmanSetup((Snowman) entity, level);
+
+        if(entity instanceof Vindicator)
+            vindicatorSetup((Vindicator) entity, level);
+
+        if(entity instanceof Zombie)
+            zombieSetup((Zombie) entity, level);
+
+        // If above 175 it's learned how to be silent
+        if(level > 175)
+            entity.setSilent(true);
+
+        // If it's above 150, set arrows up to a max of 5 depending on level
+        // to indicate resilence
+        if(level > 150) {
+            int tmp = level - 150;
+            livingEntity.setArrowsInBody(tmp / 10);
+            livingEntity.setArrowsStuck(tmp / 10);
+        }
+
+        // Entities greater than level 75 can pickup items
+        livingEntity.setCanPickupItems(level > 75);
+
         // Scale Health
         scaleHealth(livingEntity, level, isBoss);
+
+        // Scale Air
+        scaleAir(livingEntity, level, isBoss);
 
         // Store Level onto entity
         if(!hasLevel(livingEntity))
@@ -74,6 +118,70 @@ public class Mob {
 
         // Scale damage
         return scale(damage, level, isBoss, false);
+    }
+
+//    public void scaleBody(Slime slime, int level) {
+//        // There's a max level of 200 for slimes, I want a max height of 10 blocks
+//        // So I divide level by 20 to get correct sizing
+//        int size = level / 20;
+//        slime.setSize(size);
+//    }
+
+    public void creeperSetup(Creeper creeper, int level) {
+        // There's a max level of 200 for creepers, I want a max radius of 10 blocks
+        // So I divide level by 20 to get correct amount
+        int explosionRadius = level / 20;
+        creeper.setExplosionRadius(explosionRadius);
+
+        // I want a max fuse ticks of 5 seconds so divide by 2 to get that
+        int maxFuseTicks = level / 2;
+        creeper.setMaxFuseTicks(maxFuseTicks);
+
+        // Power creeper only if level is greater than 100
+        creeper.setPowered(level > 100);
+    }
+
+    public void llamaSetup(Llama llama, int level) {
+        // There's a max level of 200 for llamas, I want a max strength of 4
+        // So I divide level by 50 to get correct amount
+        int strength = (level / 50) + 1; // 1-5
+        llama.setStrength(strength);
+    }
+
+    public void phantomSetup(Phantom phantom, int level) {
+        // There's a max level of 200 for phantoms, I want a max size of 50 (out of 64)
+        // So I divide level by 4 to get correct amount
+        int size = level / 4;
+        phantom.setSize(size);
+    }
+
+    public void hoglinSetup(Hoglin hoglin, int level) {
+        // Hoglins below level 100 can be hunted
+        hoglin.setIsAbleToBeHunted(level < 100);
+    }
+
+    public void piglinSetup(Piglin piglin, int level) {
+        // Piglins above level 100 can be hunted
+        piglin.setIsAbleToHunt(level > 100);
+    }
+
+    public void snowmanSetup(Snowman snowman, int level) {
+        // Snowmen below level 100 are in derp mode
+        snowman.setDerp(level < 100);
+    }
+
+    public void vindicatorSetup(Vindicator vindicator, int level) {
+        // Vindactors above level 100 are enemy to most
+        vindicator.setJohnny(level > 100);
+    }
+
+    public void zombieSetup(Zombie zombie, int level) {
+        // Zombies above level 100 can break doors
+        zombie.setCanBreakDoors(level > 100);
+
+        // If it would normally burn in day, it won't if it's above level 100
+        if(zombie.shouldBurnInDay())
+            zombie.setShouldBurnInDay(level < 100);
     }
 
     public Double getDamageToSelf(Entity entity, double damage) {
@@ -153,6 +261,22 @@ public class Mob {
         // Set new health
         livingEntity.setMaxHealth(health);
         livingEntity.setHealth(health);
+    }
+
+    public void scaleAir(LivingEntity livingEntity, int level, boolean isBoss) {
+        // Get Scaled Health, scale up only if boss
+        double air = livingEntity.getMaximumAir();
+        air = scale(air, level, isBoss, false);
+
+        // Minecraft Limit
+        if(air > 300d)
+            air = 300d;
+        else if(air < 1d)
+            air = 1d;
+
+        // Set new health
+        livingEntity.setMaximumAir((int)air);
+        livingEntity.setRemainingAir((int)air);
     }
 
     public void displayBossTitle(Entity entity, int level) {
