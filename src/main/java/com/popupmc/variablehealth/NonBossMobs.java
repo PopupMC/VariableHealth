@@ -2,8 +2,8 @@ package com.popupmc.variablehealth;
 
 import org.bukkit.entity.EntityType;
 
-public class EntityTypesToAdd {
-    public static final EntityType[] typestoAdd = {
+public class NonBossMobs {
+    public static final EntityType[] list = {
             EntityType.BAT,
             EntityType.BEE,
             EntityType.BLAZE,

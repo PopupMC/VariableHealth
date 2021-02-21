@@ -1,6 +1,7 @@
 ## Variable Health
 
-Mobs have variable health, excluding Ender Dragon and Wither
+All Mobs and Bosses have a level between 1-100, this affects their health scaling, 
+resistence to damage, attack power, and dropped exp.
 
 Normally I would fill out a lot of into here but this is an internal plugin
 so maybe later.
