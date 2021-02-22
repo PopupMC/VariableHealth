@@ -1,8 +1,16 @@
-package com.popupmc.variablehealth;
+package com.popupmc.variablehealth.lists;
 
 import org.bukkit.entity.EntityType;
 
+import java.util.HashMap;
+
 public class NonBossMobs {
+    public static void setup() {
+        for(EntityType type : list) {
+            hashList.put(type, true);
+        }
+    }
+
     public static final EntityType[] list = {
             EntityType.BAT,
             EntityType.BEE,
@@ -73,4 +81,6 @@ public class NonBossMobs {
             EntityType.ZOMBIE_VILLAGER,
             EntityType.ZOMBIFIED_PIGLIN
     };
+
+    public static final HashMap<EntityType,Boolean> hashList = new HashMap<>();
 }
