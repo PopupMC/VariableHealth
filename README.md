@@ -31,6 +31,15 @@ Finally
 * The maximum health is scaled randomly based on level
 * The maximum underwater breathing is scaled randomly based on level
 
+The **Creeper Head** is the final addition
+
+* When you kill a creeper, theres a high chance it'll drop a special head
+* This head represents the power of the creeper you killed
+* Placing that head onto someting re-summons a zombified version of the creeper you killed that simply blows up
+* This allows you to harness the destruction power of the creeper you killed
+
+The creeper head feature was made with netherite in mind as it's the most powerful way to farm netherite over beds, tnt, and digging.
+
 Normally I would fill out a lot of into here but this is an internal plugin
 so maybe later.
 
