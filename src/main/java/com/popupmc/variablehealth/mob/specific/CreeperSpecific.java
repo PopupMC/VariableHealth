@@ -1,19 +1,24 @@
 package com.popupmc.variablehealth.mob.specific;
 
+import com.popupmc.variablehealth.VariableHealth;
 import com.popupmc.variablehealth.mob.MobLevel;
+import com.popupmc.variablehealth.mob.MobScaling;
 import org.bukkit.entity.Creeper;
 
 public class CreeperSpecific {
     public static int getCreeperExplosionRadius(int level) {
-        return level / creeperExplosionMaxRadius;
+        return MobScaling.addNoise(level / creeperExplosionMaxRadius);
     }
 
     public static int getCreeperFuseMaxTime(int level) {
-        return level / creeperFuseMaxTime;
+        return MobScaling.addNoise(level / creeperFuseMaxTime);
     }
 
     public static boolean getCreeperPowered(int level) {
-        return level > MobLevel.percentOfMax(.75f);
+        if(level > MobLevel.percentOfMax(.75f))
+            return VariableHealth.random.nextInt(100 + 1) > 25;
+
+        return false;
     }
 
     public static void creeperSetup(Creeper creeper, int level) {

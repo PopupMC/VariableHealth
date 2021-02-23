@@ -1,6 +1,7 @@
 package com.popupmc.variablehealth.mob;
 
 import com.popupmc.variablehealth.VariableHealth;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
@@ -10,14 +11,6 @@ public class MobEffects {
     public static void applyBasicEffects(LivingEntity entity, int level) {
         // Set strength if high enough level
         addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE, level / strengthLevelMax);
-
-        // Stop here, if theres armor theres some kind of weird bug that makes resistence on armor create invulnerable
-        // mobs
-        if(entity.getEquipment() != null) {
-            EntityEquipment equipment = entity.getEquipment();
-            if(equipment.getArmorContents().length > 0)
-                return;
-        }
 
         // Set resistance if high enough level
         addPotionEffect(entity, PotionEffectType.DAMAGE_RESISTANCE, level / resistanceLevelMax);
@@ -60,9 +53,10 @@ public class MobEffects {
                         false));
     }
 
-    public static final int resistanceLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 4); // 4 = 80%
-    public static final int strengthLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 4.5 hearts of damage (9 points)
-    public static final int speedLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 60% speed increase
-    public static final int hasteLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 60% speed increase
-    public static final int jumpLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 4); // 4 = 4 blocks high
+    // Bug Fix, they're 0 based. Level 3 is level 4 which explains invulnerable mobs
+    public static final int resistanceLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80%
+    public static final int strengthLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 2); // 3 = 4.5 hearts of damage (9 points)
+    public static final int speedLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80% speed increase
+    public static final int hasteLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80% speed increase
+    public static final int jumpLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 4 blocks high
 }

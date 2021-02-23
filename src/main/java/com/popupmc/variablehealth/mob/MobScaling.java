@@ -43,6 +43,16 @@ public class MobScaling {
         return val * percentChangeFloat;
     }
 
+    public static int addNoise(int val) {
+        float noisePercent = VariableHealth.random.nextInt(noiseMaxPercent) * 0.01f;
+        int noiseResult = (int)noisePercent * val;
+
+        if(VariableHealth.random.nextInt(100 + 1) > 50)
+            return val + noiseResult;
+
+        return val - noiseResult;
+    }
+
     public static void scaleHealth(LivingEntity livingEntity, int level, boolean isBoss) {
         // Get Scaled Health, scale up only if boss
         double health = livingEntity.getMaxHealth();
@@ -78,4 +88,5 @@ public class MobScaling {
     public static final int scaleMax = (int)Math.ceil(200 / (double)MobLevel.maxLevel); // Up to 250% max scaling
     public static final int scaleGranularityCount = 15; // 10 granularity count in scaling
     public static final int scaleGranularityAmount = MobLevel.maxLevel / scaleGranularityCount; // How many in each granularity
+    public static final int noiseMaxPercent = 10;
 }
