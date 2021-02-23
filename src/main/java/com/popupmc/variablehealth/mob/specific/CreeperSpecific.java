@@ -13,7 +13,7 @@ public class CreeperSpecific {
     }
 
     public static boolean getCreeperPowered(int level) {
-        return MobLevel.levelGTMaxPercent(level, 0.75f);
+        return level > MobLevel.percentOfMax(.75f);
     }
 
     public static void creeperSetup(Creeper creeper, int level) {

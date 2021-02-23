@@ -5,6 +5,6 @@ import org.bukkit.entity.Vindicator;
 
 public class VindicatorSpecific {
     public static void vindicatorSetup(Vindicator vindicator, int level) {
-        vindicator.setJohnny(MobLevel.levelGTMaxPercent(level, 0.50f));
+        vindicator.setJohnny(level > MobLevel.percentOfMax(.5f));
     }
 }

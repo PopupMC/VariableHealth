@@ -2,18 +2,25 @@ package com.popupmc.variablehealth.mob;
 
 import com.popupmc.variablehealth.VariableHealth;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class MobEffects {
     public static void applyBasicEffects(LivingEntity entity, int level) {
         // Set strength if high enough level
-        if((level / strengthLevelMax) > 0)
-            addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE, level / strengthLevelMax);
+        addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE, level / strengthLevelMax);
+
+        // Stop here, if theres armor theres some kind of weird bug that makes resistence on armor create invulnerable
+        // mobs
+        if(entity.getEquipment() != null) {
+            EntityEquipment equipment = entity.getEquipment();
+            if(equipment.getArmorContents().length > 0)
+                return;
+        }
 
         // Set resistance if high enough level
-        if((level / resistanceLevelMax) > 0)
-            addPotionEffect(entity, PotionEffectType.DAMAGE_RESISTANCE, level / resistanceLevelMax);
+        addPotionEffect(entity, PotionEffectType.DAMAGE_RESISTANCE, level / resistanceLevelMax);
     }
 
     public static void applyExtraEffects(LivingEntity entity, int level) {
@@ -27,20 +34,20 @@ public class MobEffects {
             addPotionEffect(entity, PotionEffectType.FAST_DIGGING, level / hasteLevelMax);
         if((enabledEffects & 0b0000000100) > 0 && (level / jumpLevelMax) > 0)
             addPotionEffect(entity, PotionEffectType.JUMP, level / jumpLevelMax);
-        if((enabledEffects & 0b0000001000) > 0)
-            addPotionEffect(entity, PotionEffectType.REGENERATION, 1);
+//        if((enabledEffects & 0b0000001000) > 0)
+//            addPotionEffect(entity, PotionEffectType.REGENERATION, 1);
         if((enabledEffects & 0b0000010000) > 0)
-            addPotionEffect(entity, PotionEffectType.FIRE_RESISTANCE, 1);
+            addPotionEffect(entity, PotionEffectType.FIRE_RESISTANCE, 0);
         if((enabledEffects & 0b0000100000) > 0)
-            addPotionEffect(entity, PotionEffectType.WATER_BREATHING, 1);
+            addPotionEffect(entity, PotionEffectType.WATER_BREATHING, 0);
 //        if((enabledEffects & 0b0001000000) > 0 && entity.getType() != EntityType.CREEPER) // Invisible Creepers is unfair
 //            addPotionEffect(entity, PotionEffectType.INVISIBILITY, 1);
         if((enabledEffects & 0b0010000000) > 0)
-            addPotionEffect(entity, PotionEffectType.HEALTH_BOOST, 1);
+            addPotionEffect(entity, PotionEffectType.HEALTH_BOOST, 0);
         if((enabledEffects & 0b0100000000) > 0)
-            addPotionEffect(entity, PotionEffectType.SLOW_FALLING, 1);
-        if((enabledEffects & 0b1000000000) > 0)
-            addPotionEffect(entity, PotionEffectType.ABSORPTION, 1);
+            addPotionEffect(entity, PotionEffectType.SLOW_FALLING, 0);
+//        if((enabledEffects & 0b1000000000) > 0)
+//            addPotionEffect(entity, PotionEffectType.ABSORPTION, 0);
     }
 
     public static void addPotionEffect(LivingEntity entity, PotionEffectType type, int level) {
@@ -54,7 +61,7 @@ public class MobEffects {
     }
 
     public static final int resistanceLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 4); // 4 = 80%
-    public static final int strengthLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 4); // 4 = 6 hearts of damage (12 points)
+    public static final int strengthLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 4.5 hearts of damage (9 points)
     public static final int speedLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 60% speed increase
     public static final int hasteLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 3 = 60% speed increase
     public static final int jumpLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 4); // 4 = 4 blocks high

@@ -5,6 +5,6 @@ import org.bukkit.entity.Hoglin;
 
 public class HoglinSpecific {
     public static void hoglinSetup(Hoglin hoglin, int level) {
-        hoglin.setIsAbleToBeHunted(MobLevel.levelLTMaxPercent(level, 0.50f));
+        hoglin.setIsAbleToBeHunted(level < MobLevel.percentOfMax(.5f));
     }
 }

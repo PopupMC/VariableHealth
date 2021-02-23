@@ -1,5 +1,6 @@
 package com.popupmc.variablehealth.mob;
 
+import com.popupmc.variablehealth.VariableHealth;
 import com.popupmc.variablehealth.lists.BossMobs;
 import com.popupmc.variablehealth.lists.NonBossMobs;
 import com.popupmc.variablehealth.mob.specific.*;
@@ -60,18 +61,18 @@ public class Mob {
         // Setup specific mobs
         Specific.setup(livingEntity, level);
 
-        // If above 175 it's learned how to be silent
-        if(MobLevel.levelGTMaxPercent(level, 0.75f))
-            entity.setSilent(true);
+        // If above 175 it's probably learned how to be silent
+        if(level > MobLevel.percentOfMax(0.75f))
+            entity.setSilent(VariableHealth.random.nextInt(100 + 1) > 25);
 
         // Apply effect all mobs get
         MobEffects.applyBasicEffects(livingEntity, level);
 
-        // If above 50% of max level and not a boss, apply extra effects
-        if(MobLevel.levelGTMaxPercent(level, 0.50f) && !isBoss)
+        // If above 50% of max level and not a boss, apply extra effects and config
+        if(level > MobLevel.percentOfMax(0.50f) && !isBoss) {
             MobEffects.applyExtraEffects(livingEntity, level);
-
-        livingEntity.setCanPickupItems(MobLevel.levelGTMaxPercent(level, 0.50f));
+            livingEntity.setCanPickupItems(VariableHealth.random.nextInt(100 + 1) > 25);
+        }
 
         // Scale Health
         MobScaling.scaleHealth(livingEntity, level, isBoss);

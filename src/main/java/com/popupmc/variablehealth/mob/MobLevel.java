@@ -32,14 +32,6 @@ public class MobLevel {
         return (int)(maxLevel * percent);
     }
 
-    public static boolean levelGTMaxPercent(int level, float percent) {
-        return level > percentOfMax(percent);
-    }
-
-    public static boolean levelLTMaxPercent(int level, float percent) {
-        return level < percentOfMax(percent);
-    }
-
     public static int randomLevel() {
         return VariableHealth.random.nextInt(maxLevel) + 1;
     }
