@@ -36,6 +36,8 @@ public class CreeperHead {
         ItemStack item = new ItemStack(Material.CREEPER_HEAD);
         ItemMeta meta = item.getItemMeta();
 
+        meta.setDisplayName("Explosive Head");
+
         // Save data into item
         ArrayList<String> lore = new ArrayList<>();
         lore.add("Blast Radius: " + CreeperSpecific.getCreeperExplosionRadius(level));

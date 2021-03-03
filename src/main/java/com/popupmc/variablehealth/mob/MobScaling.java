@@ -44,13 +44,18 @@ public class MobScaling {
     }
 
     public static int addNoise(int val) {
-        float noisePercent = VariableHealth.random.nextInt(noiseMaxPercent) * 0.01f;
-        int noiseResult = (int)noisePercent * val;
+        return addNoise(val, noiseMaxPercent);
+    }
+
+    public static int addNoise(int val, int percent) {
+
+        int valPercent = (int)(val * (percent * 0.01));
+        valPercent = VariableHealth.random.nextInt(valPercent + 1);
 
         if(VariableHealth.random.nextInt(100 + 1) > 50)
-            return val + noiseResult;
+            return val + valPercent;
 
-        return val - noiseResult;
+        return val - valPercent;
     }
 
     public static void scaleHealth(LivingEntity livingEntity, int level, boolean isBoss) {

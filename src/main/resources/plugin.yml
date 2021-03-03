@@ -4,3 +4,8 @@ main: com.popupmc.variablehealth.VariableHealth
 description: Variable Health
 author: junebug12851
 api-version: 1.16
+
+commands:
+  mob-range:
+    description: Shows mob level range
+    usage: /mob-range

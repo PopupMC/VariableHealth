@@ -16,6 +16,6 @@ public class PhantomSpecific {
         phantom.setSize(size);
     }
 
-    public static final int phantomSizeMaxRaw = 32;
+    public static final int phantomSizeMaxRaw = 16;
     public static final int phantomSizeMax = (int)Math.ceil((double) MobLevel.maxLevel / phantomSizeMaxRaw); // Up to size 32
 }
