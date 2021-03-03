@@ -19,7 +19,7 @@ public class CreeperHead {
         if(entity.getType() != EntityType.CREEPER)
             return false;
 
-        return VariableHealth.random.nextInt(100 + 1) > 25;
+        return VariableHealth.random.nextInt(100 + 1) > 70;
     }
 
     public static void dropCreeperHead(Entity entity) {
