@@ -69,7 +69,7 @@ public class Mob {
 
         boolean hasCustomName = entity.getCustomName() != null && !entity.getCustomName().isEmpty();
 
-        if(!isBoss && !hasCustomName) {
+        if(!hasCustomName) {
             String entityName = entity.getType().name().toLowerCase().replaceAll("_", " ");
             entityName = convertToTitleCaseSplitting(entityName);
 

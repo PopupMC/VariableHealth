@@ -38,10 +38,15 @@ public class MobLevel {
     }
 
     public static int getLevel(Location location) {
-        int powerLevelAverage = Math.max(getPowerLevelAverage(location), 1);
+        int powerLevelAverage = getPowerLevelAverage(location);
 
         if(powerLevelAverage <= -1)
             return VariableHealth.random.nextInt(maxLevel) + 1;
+
+        // DarkPrincess, you idiot, Using Math.max on the first line of the method prents it from ever being -1
+        // Leading to the annoying bug you created
+        // Sincerely ~DarkPrincess
+        powerLevelAverage = Math.max(powerLevelAverage, 1);
 
         int level = powerLevelAverage / powerLevelPerLevel;
         level = MobScaling.addNoise(level, noiseMaxPercent);
