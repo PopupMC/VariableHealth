@@ -37,12 +37,13 @@ public class Mob {
             level = MobLevel.getLevel(entity.getLocation());
 
         // Setup new mob
-        if(!setup)
+        if(!setup) {
             setupNewMob(livingEntity, isBoss, level);
 
-        // Display title if boss
-        if(isBoss)
-            MobBoss.displayBossTitle(entity, level);
+            // Display title if boss
+            if(isBoss)
+                MobBoss.displayBossTitle(entity, level);
+        }
     }
 
     public static void setupNewMob(Entity entity, boolean isBoss, int level) {
@@ -52,28 +53,29 @@ public class Mob {
         // Get living instance
         LivingEntity livingEntity = (LivingEntity)entity;
 
-        if(GlowingMobs.hashList.containsKey(entity.getType()) && level < MobLevel.percentOfMax(0.25f)) {
-            livingEntity.setGlowing(VariableHealth.random.nextInt(100 + 1) > 25);
+        // Skip all mobs that are tamed
+        if(entity instanceof Tameable) {
+            if(((Tameable)entity).getOwnerUniqueId() != null && ((Tameable)entity).isTamed()) {
+                return;
+            }
         }
 
-        // Skip all mobs that are tamed
-//        if(entity instanceof Tameable) {
-//            if(((Tameable)entity).getOwnerUniqueId() != null && ((Tameable)entity).isTamed()) {
-//                return;
-//            }
-//        }
-
-        // Skip anything that has a custom name
-        if(entity.getCustomName() != null && !entity.getCustomName().isEmpty())
-            return;
-
+        // Does it have a custom name?
         boolean hasCustomName = entity.getCustomName() != null && !entity.getCustomName().isEmpty();
 
+        // If not, assign one, else stop here. Dont touch anything with custom names
         if(!hasCustomName) {
-            String entityName = entity.getType().name().toLowerCase().replaceAll("_", " ");
-            entityName = convertToTitleCaseSplitting(entityName);
+            entity.setCustomName("[" + level + "] " + readableMobName(entity.getType()));
+        }
+        else
+            return;
 
-            entity.setCustomName("[" + level + "] " + entityName);
+        // Skip all mobs that are leashed
+        if(livingEntity.isLeashed())
+            return;
+
+        if(GlowingMobs.hashList.containsKey(entity.getType()) && level < MobLevel.percentOfMax(0.25f)) {
+            livingEntity.setGlowing(VariableHealth.random.nextInt(100 + 1) > 25);
         }
 
         // Setup specific mobs
@@ -92,9 +94,11 @@ public class Mob {
         MobEffects.applyExtraEffects(livingEntity, level);
 
         // If above 50% of max level and not a boss, apply extra effects and config
-        if(level > MobLevel.percentOfMax(0.50f) && !isBoss) {
-            livingEntity.setCanPickupItems(VariableHealth.random.nextInt(100 + 1) > 25);
-        }
+//        if(level > MobLevel.percentOfMax(0.50f) && !isBoss) {
+//            livingEntity.setCanPickupItems(VariableHealth.random.nextInt(100 + 1) > 25);
+//        }
+
+        livingEntity.setCanPickupItems(false);
 
         // Scale Health
         MobScaling.scaleHealth(livingEntity, level, isBoss);
@@ -105,6 +109,11 @@ public class Mob {
         // Store Level onto entity
         if(!MobLevel.hasLevel(livingEntity))
             MobLevel.storeLevel(livingEntity, level);
+    }
+
+    public static String readableMobName(EntityType type) {
+        return convertToTitleCaseSplitting(
+                type.name().toLowerCase().replaceAll("_", " "));
     }
 
     public static String convertToTitleCaseSplitting(String text) {

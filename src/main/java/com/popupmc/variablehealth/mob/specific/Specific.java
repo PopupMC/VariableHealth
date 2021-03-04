@@ -27,5 +27,8 @@ public class Specific {
 
         if(entity instanceof Zombie)
             ZombieSpecific.zombieSetup((Zombie) entity, level);
+
+        if(entity instanceof Villager)
+            VillagerSpecific.villagerSetup((Villager) entity, level);
     }
 }
