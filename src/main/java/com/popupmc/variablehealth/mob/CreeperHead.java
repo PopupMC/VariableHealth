@@ -2,6 +2,7 @@ package com.popupmc.variablehealth.mob;
 
 import com.popupmc.variablehealth.VariableHealth;
 import com.popupmc.variablehealth.mob.specific.CreeperSpecific;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
@@ -38,11 +39,37 @@ public class CreeperHead {
 
         meta.setDisplayName("Explosive Head");
 
+        String blastRadiusMsg = "Blast Radius";
+
+        // 25% chance obfuscated
+        if(VariableHealth.random.nextInt(100 + 1) < 25)
+            blastRadiusMsg = ChatColor.MAGIC + blastRadiusMsg;
+        else
+            blastRadiusMsg = ": " + blastRadiusMsg;
+
+        // 25% chance level 75+ is randomized
+        if(level > MobLevel.percentOfMax(.75f) && VariableHealth.random.nextInt(100 + 1) < 25) {
+            blastRadiusMsg += "???";
+        }
+        else {
+            blastRadiusMsg += CreeperSpecific.getCreeperExplosionRadius(level);
+        }
+
+        String poweredMsg = "Powered: ";
+
+        // 25% chance randomized
+        if(VariableHealth.random.nextInt(100 + 1) < 25) {
+            poweredMsg += "maybe?";
+        }
+        else {
+            poweredMsg += ((CreeperSpecific.getCreeperPowered(level)) ? "yes" : "no");
+        }
+
         // Save data into item
         ArrayList<String> lore = new ArrayList<>();
-        lore.add("Blast Radius: " + CreeperSpecific.getCreeperExplosionRadius(level));
+        lore.add(blastRadiusMsg);
         lore.add("Fuse: " + CreeperSpecific.getCreeperFuseMaxTime(level));
-        lore.add("Powered: " + ((CreeperSpecific.getCreeperPowered(level)) ? "yes" : "no"));
+        lore.add(poweredMsg);
         meta.setLore(lore);
         item.setItemMeta(meta);
 
@@ -64,7 +91,7 @@ public class CreeperHead {
         String fuse = lore.get(1);
         String powered = lore.get(2);
 
-        return blastRadius.startsWith("Blast Radius: ") &&
+        return blastRadius.startsWith("Blast Radius") &&
                 fuse.startsWith("Fuse: ") &&
                 powered.startsWith("Powered: ");
     }
@@ -95,7 +122,7 @@ public class CreeperHead {
         String fuse = lore.get(1);
         String powered = lore.get(2);
 
-        if(!blastRadius.startsWith("Blast Radius: ") ||
+        if(!blastRadius.startsWith("Blast Radius") ||
                 !fuse.startsWith("Fuse: ") ||
                 !powered.startsWith("Powered: "))
             return;
@@ -109,9 +136,22 @@ public class CreeperHead {
         boolean poweredBool;
 
         try {
-            blastRadiusInt = Integer.parseInt(blastRadius);
+            if(blastRadius.equalsIgnoreCase("???")) {
+                int maxLevelDif = MobLevel.maxLevel - MobLevel.percentOfMax(.75f);
+
+                blastRadiusInt = CreeperSpecific.getCreeperExplosionRadius(
+                        VariableHealth.random.nextInt(maxLevelDif) + MobLevel.percentOfMax(.75f)
+                );
+            }
+            else
+                blastRadiusInt = Integer.parseInt(blastRadius);
+
             fuseInt = Integer.parseInt(fuse);
-            poweredBool = powered.equalsIgnoreCase("yes");
+
+            if(powered.equalsIgnoreCase("maybe?"))
+                poweredBool = VariableHealth.random.nextInt(100 + 1) > 50;
+            else
+                poweredBool = powered.equalsIgnoreCase("yes");
         }
         catch (NumberFormatException ex) {
             plugin.getLogger().warning("NumberFormatException");
