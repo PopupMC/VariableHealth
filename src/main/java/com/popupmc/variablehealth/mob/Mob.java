@@ -17,6 +17,12 @@ public class Mob {
     }
 
     public static void setup(Entity entity) {
+
+        // Don't proceed if this isn't a new mob
+        if(entity.getTicksLived() > 20)
+            return;
+
+        // Don't proceed if it isn't a living entity
         if(!(entity instanceof LivingEntity))
             return;
 
@@ -92,6 +98,9 @@ public class Mob {
             MobEffects.applyBasicEffectsNonBoss(livingEntity, level);
 
         MobEffects.applyExtraEffects(livingEntity, level);
+
+        // This will auto-skip if not low-level
+        MobEffects.applyLowLevelEffects(livingEntity, level);
 
         // If above 50% of max level and not a boss, apply extra effects and config
 //        if(level > MobLevel.percentOfMax(0.50f) && !isBoss) {

@@ -90,7 +90,7 @@ public class MobScaling {
         livingEntity.setRemainingAir((int)air);
     }
 
-    public static final int scaleMax = (int)Math.ceil(200 / (double)MobLevel.maxLevel); // Up to 250% max scaling
+    public static final int scaleMax = (int)Math.ceil(250 / (double)MobLevel.maxLevel); // Up to 250% max scaling
     public static final int scaleGranularityCount = 15; // 10 granularity count in scaling
     public static final int scaleGranularityAmount = MobLevel.maxLevel / scaleGranularityCount; // How many in each granularity
     public static final int noiseMaxPercent = 10;

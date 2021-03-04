@@ -44,6 +44,8 @@ public class VillagerSpecific {
 
         // Prevents a level: 0 crash that can happen
         int villagerLevel = level / levelMax;
+        villagerLevel++;
+
         if(villagerLevel > 5)
             villagerLevel = 5;
         else if(villagerLevel < 1)
@@ -53,5 +55,5 @@ public class VillagerSpecific {
     }
 
     public static final int expMax = (int)Math.ceil((double) MobLevel.maxLevel / 250); // 250 Max
-    public static final int levelMax = (int)Math.ceil((double) MobLevel.maxLevel / 5); // 5 Max
+    public static final int levelMax = (int)Math.ceil((double) MobLevel.maxLevel / 4); // 4 Max (Will add 1)
 }

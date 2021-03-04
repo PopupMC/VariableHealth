@@ -1,5 +1,6 @@
 package com.popupmc.variablehealth.events;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.popupmc.variablehealth.mob.Mob;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -38,6 +39,16 @@ public class OnMobSpawn implements Listener {
     // loaded chunks although the latter two are unverified
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
+        if(!Mob.doesApply(event.getEntity()))
+            return;
+
+        Mob.setup(event.getEntity());
+    }
+
+    // This is supposedly called whenever any entity is added to the world, its very specific to Paper only
+    // Because Im unsure how accurate this is Im leaving the others above
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onCreatureSpawn(EntityAddToWorldEvent event) {
         if(!Mob.doesApply(event.getEntity()))
             return;
 
