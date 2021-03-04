@@ -8,5 +8,7 @@ public class SnowmanSpecific {
     public static void snowmanSetup(Snowman snowman, int level) {
         if(level < MobLevel.percentOfMax(.5f))
             snowman.setDerp(VariableHealth.random.nextInt(100 + 1) > 25);
+        else
+            snowman.setDerp(VariableHealth.random.nextInt(100 + 1) < 25);
     }
 }

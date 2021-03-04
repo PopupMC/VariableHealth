@@ -3,6 +3,7 @@ package com.popupmc.variablehealth;
 import com.popupmc.variablehealth.commands.OnMobRangeCommand;
 import com.popupmc.variablehealth.events.OnCreeperDeath;
 import com.popupmc.variablehealth.events.OnCreeperHeadPlace;
+import com.popupmc.variablehealth.events.OnMobDeath;
 import com.popupmc.variablehealth.events.OnMobSpawn;
 import com.popupmc.variablehealth.lists.BossMobs;
 import com.popupmc.variablehealth.lists.GlowingMobs;
@@ -27,6 +28,7 @@ public class VariableHealth extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new OnMobSpawn(), this);
         Bukkit.getPluginManager().registerEvents(new OnCreeperDeath(), this);
         Bukkit.getPluginManager().registerEvents(new OnCreeperHeadPlace(), this);
+        Bukkit.getPluginManager().registerEvents(new OnMobDeath(), this);
 
         Objects.requireNonNull(this.getCommand("mob-range")).setExecutor(new OnMobRangeCommand());
 

@@ -8,5 +8,7 @@ public class HoglinSpecific {
     public static void hoglinSetup(Hoglin hoglin, int level) {
         if(level < MobLevel.percentOfMax(.5f))
             hoglin.setIsAbleToBeHunted(VariableHealth.random.nextInt(100 + 1) > 25);
+        else
+            hoglin.setIsAbleToBeHunted(VariableHealth.random.nextInt(100 + 1) < 25);
     }
 }

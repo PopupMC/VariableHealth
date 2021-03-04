@@ -71,7 +71,8 @@ public class Mob {
 
         // If not, assign one, else stop here. Dont touch anything with custom names
         if(!hasCustomName) {
-            entity.setCustomName("[" + level + "] " + readableMobName(entity.getType()));
+            //if(entity.getType() != EntityType.ENDER_DRAGON)
+                entity.setCustomName("[" + level + "] " + readableMobName(entity.getType()));
         }
         else
             return;
@@ -88,7 +89,7 @@ public class Mob {
         Specific.setup(livingEntity, level);
 
         // If above 175 it's probably learned how to be silent
-        if(level > MobLevel.percentOfMax(0.75f))
+        if(level > MobLevel.percentOfMax(0.75f) && entity.getType() != EntityType.ENDER_DRAGON)
             entity.setSilent(VariableHealth.random.nextInt(100 + 1) > 25);
 
         // Apply effect all mobs get
@@ -100,7 +101,8 @@ public class Mob {
         MobEffects.applyExtraEffects(livingEntity, level);
 
         // This will auto-skip if not low-level
-        MobEffects.applyLowLevelEffects(livingEntity, level);
+        if(!isBoss)
+            MobEffects.applyLowLevelEffects(livingEntity, level);
 
         // If above 50% of max level and not a boss, apply extra effects and config
 //        if(level > MobLevel.percentOfMax(0.50f) && !isBoss) {
@@ -110,10 +112,12 @@ public class Mob {
         livingEntity.setCanPickupItems(false);
 
         // Scale Health
-        MobScaling.scaleHealth(livingEntity, level, isBoss);
+        //if(entity.getType() != EntityType.ENDER_DRAGON)
+            MobScaling.scaleHealth(livingEntity, level, isBoss);
 
         // Scale Air
-        MobScaling.scaleAir(livingEntity, level, isBoss);
+        //if(entity.getType() != EntityType.ENDER_DRAGON)
+            MobScaling.scaleAir(livingEntity, level, isBoss);
 
         // Store Level onto entity
         if(!MobLevel.hasLevel(livingEntity))

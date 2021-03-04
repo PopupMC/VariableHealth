@@ -8,5 +8,7 @@ public class VindicatorSpecific {
     public static void vindicatorSetup(Vindicator vindicator, int level) {
         if(level > MobLevel.percentOfMax(.5f))
             vindicator.setJohnny(VariableHealth.random.nextInt(100 + 1) > 25);
+        else
+            vindicator.setJohnny(VariableHealth.random.nextInt(100 + 1) < 25);
     }
 }
