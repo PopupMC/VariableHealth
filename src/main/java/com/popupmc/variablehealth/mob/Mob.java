@@ -19,8 +19,11 @@ public class Mob {
     public static void setup(Entity entity) {
 
         // Don't proceed if this isn't a new mob
-        if(entity.getTicksLived() > 20)
-            return;
+        // Disabled because I forgot passive mobs only spawn once, this means
+        // all animals would not be "upgraded" per say to a level system
+        // Only new animals in new chunks
+//        if(entity.getTicksLived() > 20)
+//            return;
 
         // Don't proceed if it isn't a living entity
         if(!(entity instanceof LivingEntity))
@@ -81,7 +84,7 @@ public class Mob {
         if(livingEntity.isLeashed())
             return;
 
-        if(GlowingMobs.hashList.containsKey(entity.getType()) && level < MobLevel.percentOfMax(0.25f)) {
+        if(GlowingMobs.hashList.containsKey(entity.getType()) && level < MobEffects.maxLowLevel) {
             livingEntity.setGlowing(VariableHealth.random.nextInt(100 + 1) > 25);
         }
 

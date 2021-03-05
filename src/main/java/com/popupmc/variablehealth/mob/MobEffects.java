@@ -9,14 +9,16 @@ import org.bukkit.potion.PotionEffectType;
 public class MobEffects {
     public static void applyBasicEffectsNonBoss(LivingEntity entity, int level) {
         if(VariableHealth.random.nextInt(100 + 1) > 50 && level > maxLowLevel)
-            addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE, level / strengthLevelMax);
+            addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE,
+                    (VariableHealth.random.nextInt(100 + 1) > 50) ? 0 : 1);
 
         if(VariableHealth.random.nextInt(100 + 1) > 50 && level > maxLowLevel)
             addPotionEffect(entity, PotionEffectType.DAMAGE_RESISTANCE, level / resistanceLevelMax);
     }
 
     public static void applyBasicEffectsBoss(LivingEntity entity, int level) {
-        addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE, level / strengthLevelMax);
+        addPotionEffect(entity, PotionEffectType.INCREASE_DAMAGE,
+                (VariableHealth.random.nextInt(100 + 1) > 50) ? 0 : 1);
         addPotionEffect(entity, PotionEffectType.DAMAGE_RESISTANCE, level / resistanceLevelMax);
     }
 
@@ -33,7 +35,8 @@ public class MobEffects {
 
         // Speed
         if((enabledEffects & 0b0000000001) > 0 && level > maxLowLevel)
-            addPotionEffect(entity, PotionEffectType.SPEED, level / speedLevelMax);
+            addPotionEffect(entity, PotionEffectType.SPEED,
+                    (VariableHealth.random.nextInt(100 + 1) > 50) ? 0 : 1);
 
         // Haste
         if((enabledEffects & 0b0000000010) > 0 && level > maxLowLevel)
@@ -101,15 +104,13 @@ public class MobEffects {
 
     // Bug Fix, they're 0 based. Level 3 is level 4 which explains invulnerable mobs
     public static final int resistanceLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80%
-    public static final int strengthLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 2); // 3 = 4.5 hearts of damage (9 points)
-    public static final int speedLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80% speed increase
     public static final int hasteLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 80% speed increase
-    public static final int jumpLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 3); // 4 = 4 blocks high
+    public static final int jumpLevelMax = (int)Math.ceil((double)MobLevel.maxLevel / 2); // 3 = 3 blocks high
     public static final int healthBoostMax = (int)Math.ceil((double)MobLevel.maxLevel / 2); // 3 = 6 extra hearts
     public static final int absorbtionBoostMax = (int)Math.ceil((double)MobLevel.maxLevel / 2); // 3 = 6 extra hearts
 
     public static final int maxLowLevel = MobLevel.percentOfMax(.15f);
 
-    public static final int slownessLevelMax = (int)Math.ceil((double)maxLowLevel / 5); // 6 = 90% speed decrease
+    public static final int slownessLevelMax = (int)Math.ceil((double)maxLowLevel / 4); // 5 = 75% speed decrease
     public static final int fatigueLevelMax = (int)Math.ceil((double)maxLowLevel / 3);
 }

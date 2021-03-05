@@ -43,9 +43,9 @@ public class CreeperHead {
 
         // 25% chance obfuscated
         if(VariableHealth.random.nextInt(100 + 1) < 25)
-            blastRadiusMsg = ChatColor.MAGIC + blastRadiusMsg;
+            blastRadiusMsg += ChatColor.MAGIC;
         else
-            blastRadiusMsg = ": " + blastRadiusMsg;
+            blastRadiusMsg += ": ";
 
         // 25% chance level 75+ is randomized
         if(level > MobLevel.percentOfMax(.75f) && VariableHealth.random.nextInt(100 + 1) < 25) {
