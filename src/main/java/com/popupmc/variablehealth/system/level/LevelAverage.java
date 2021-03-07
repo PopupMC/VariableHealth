@@ -15,6 +15,7 @@ public class LevelAverage extends BaseSystem {
     public LevelAverage(int powerLevelCap,
                         int averageRadius,
                         int levelNoiseMaxPercent,
+                        @NotNull Level parent,
                         @NotNull System system,
                         @NotNull VariableHealth plugin) {
         super(system, plugin);
@@ -23,7 +24,7 @@ public class LevelAverage extends BaseSystem {
         this.averageRadius = averageRadius;
         this.levelNoiseMaxPercent = levelNoiseMaxPercent;
 
-        powerLevelPerLevel = (int)Math.ceil((double)powerLevelCap / system.level.data.maxLevel);
+        powerLevelPerLevel = (int)Math.ceil((double)powerLevelCap / parent.data.maxLevel);
     }
 
     // Gets the average power level in an area

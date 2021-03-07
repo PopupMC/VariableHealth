@@ -15,9 +15,9 @@ public class Level extends BaseSystem {
                  @NotNull VariableHealth plugin) {
         super(system, plugin);
 
-        this.meta = new LevelMeta(system, plugin);
-        this.average = new LevelAverage(powerLevelCap, averageRadius, levelNoiseMaxPercent, system, plugin);
         this.data = new LevelData(maxLevel, lowLevelPercent, system, plugin);
+        this.meta = new LevelMeta(system, plugin);
+        this.average = new LevelAverage(powerLevelCap, averageRadius, levelNoiseMaxPercent, this, system, plugin);
     }
 
     public final LevelMeta meta;
