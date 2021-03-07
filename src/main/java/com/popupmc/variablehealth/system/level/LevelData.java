@@ -15,7 +15,7 @@ public class LevelData extends BaseSystem {
         super(system, plugin);
 
         this.maxLevel = maxLevel;
-        this.maxLowLevel = percentOfMax(lowLevelPercent);
+        this.maxLowLevel = percentOfMax((float)lowLevelPercent * 0.01f);
     }
 
     public int percentOfMax(float percent) {

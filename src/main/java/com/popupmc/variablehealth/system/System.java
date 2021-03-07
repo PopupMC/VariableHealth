@@ -40,6 +40,7 @@ public class System extends BaseClass {
                   int villagerExpMax,
                   int villagerLevelMax,
                   int slimeMaxSize,
+                  int strengthLevelMax,
                   @NotNull VariableHealth plugin) {
         super(plugin);
 
@@ -66,6 +67,7 @@ public class System extends BaseClass {
                 absorbtionBoostMax,
                 slownessLevelMax,
                 fatigueLevelMax,
+                strengthLevelMax,
                 this,
                 plugin);
 

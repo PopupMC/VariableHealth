@@ -16,11 +16,12 @@ public class Effects extends BaseSystem {
                    int absorbtionBoostMax,
                    int slownessLevelMax,
                    int fatigueLevelMax,
+                   int strengthLevelMax,
                    @NotNull System system,
                    @NotNull VariableHealth plugin) {
         super(system, plugin);
 
-        this.basic = new EffectsBasic(resistanceLevelMax, system, plugin);
+        this.basic = new EffectsBasic(resistanceLevelMax, strengthLevelMax, system, plugin);
         this.extra = new EffectsExtra(
                 hasteLevelMax,
                 jumpLevelMax,

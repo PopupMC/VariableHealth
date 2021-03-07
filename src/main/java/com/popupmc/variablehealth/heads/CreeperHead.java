@@ -22,7 +22,7 @@ public class CreeperHead extends BaseClass {
     }
 
     public void dropCreeperHead(LivingEntity entity) {
-        if((entity.getType() != EntityType.CREEPER) &&
+        if((entity.getType() != EntityType.CREEPER) ||
                 !RandomTools.getRandomChanceDown(30))
             return;
 

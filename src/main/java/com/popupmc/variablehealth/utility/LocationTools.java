@@ -14,7 +14,7 @@ public class LocationTools {
         ArrayList<Player> ret = new ArrayList<>();
 
         for(Player player : players) {
-            if(includeHidden && (player.getGameMode() == GameMode.SPECTATOR || player.isOp())) {
+            if(!includeHidden && (player.getGameMode() == GameMode.SPECTATOR || player.isOp())) {
                 continue;
             }
 

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EffectsBasic extends BaseSystem {
     public EffectsBasic(int resistanceLevelMax,
+                        int strengthLevelMax,
                         @NotNull System system,
                         @NotNull VariableHealth plugin) {
         super(system, plugin);
@@ -18,6 +19,10 @@ public class EffectsBasic extends BaseSystem {
         this.resistanceLevelMax = MathTools.createEasyDivider(
                 system.level.data.maxLevel,
                 MathTools.getPotionLevel(resistanceLevelMax));
+
+        this.strengthLevelMax = MathTools.createEasyDivider(
+                system.level.data.maxLevel,
+                MathTools.getPotionLevel(strengthLevelMax));
     }
 
     public void applyBasicEffects(LivingEntity entity, int level, boolean isBoss) {
@@ -32,7 +37,7 @@ public class EffectsBasic extends BaseSystem {
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.INCREASE_DAMAGE,
-                    (RandomTools.getCoinFlip()) ? 0 : 1);
+                    level / strengthLevelMax);
 
         if(RandomTools.getCoinFlip() && level > system.level.data.maxLowLevel)
             system.effects.addPotionEffect(
@@ -45,7 +50,7 @@ public class EffectsBasic extends BaseSystem {
         system.effects.addPotionEffect(
                 entity,
                 PotionEffectType.INCREASE_DAMAGE,
-                (RandomTools.getCoinFlip()) ? 0 : 1);
+                level / strengthLevelMax);
 
         system.effects.addPotionEffect(
                 entity,
@@ -54,4 +59,5 @@ public class EffectsBasic extends BaseSystem {
     }
 
     public final int resistanceLevelMax;
+    public final int strengthLevelMax;
 }

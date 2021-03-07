@@ -21,77 +21,79 @@ public class EffectsExtra extends BaseSystem {
                         @NotNull VariableHealth plugin) {
         super(system, plugin);
 
-        this.hasteLevelMax = MathTools.createEasyDivider(system.level.data.maxLevel, hasteLevelMax);
-        this.jumpLevelMax = MathTools.createEasyDivider(system.level.data.maxLevel, jumpLevelMax);
-        this.healthBoostMax = MathTools.createEasyDivider(system.level.data.maxLevel, healthBoostMax);
-        this.absorbtionBoostMax = MathTools.createEasyDivider(system.level.data.maxLevel, absorbtionBoostMax);
+        this.hasteLevelMax = MathTools.createEasyDivider(system.level.data.maxLevel, MathTools.getPotionLevel(hasteLevelMax));
+        this.jumpLevelMax = MathTools.createEasyDivider(system.level.data.maxLevel, MathTools.getPotionLevel(jumpLevelMax));
+        this.healthBoostMax = MathTools.createEasyDivider(system.level.data.maxLevel, MathTools.getPotionLevel(healthBoostMax));
+        this.absorbtionBoostMax = MathTools.createEasyDivider(system.level.data.maxLevel, MathTools.getPotionLevel(absorbtionBoostMax));
 
-        this.slownessLevelMax = MathTools.createEasyDivider(system.level.data.maxLowLevel, slownessLevelMax);
-        this.fatigueLevelMax = MathTools.createEasyDivider(system.level.data.maxLevel, fatigueLevelMax);
+        this.slownessLevelMax = MathTools.createEasyDivider(system.level.data.maxLowLevel, MathTools.getPotionLevel(slownessLevelMax));
+        this.fatigueLevelMax = MathTools.createEasyDivider(system.level.data.maxLowLevel, MathTools.getPotionLevel(fatigueLevelMax));
     }
 
     public void applyExtraEffects(LivingEntity entity, int level) {
 
         // If low level, there's a 25% chance some of these will apply
         if(level <= system.level.data.maxLowLevel) {
-            if(!RandomTools.getRandomChanceDown(25))
+            if(!RandomTools.getRandomChanceDown(20))
                 return;
         }
 
         // Get random effects for 8 potions
-        int enabledEffects = RandomTools.getRandomRange0Inclusive(0b11111111);
+        int enabledEffects = RandomTools.getRandomRange0Inclusive(0b111111111);
+
+        // Skipping bit 0
 
         // Speed
-        if((enabledEffects & 0b00000001) > 0 && level > system.level.data.maxLowLevel)
+        if((enabledEffects & 0b000000010) > 0 && level > system.level.data.maxLowLevel)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.SPEED,
                     MathTools.getPotionLevel((RandomTools.getCoinFlip()) ? 1 : 2));
 
         // Haste
-        if((enabledEffects & 0b00000010) > 0 && level > system.level.data.maxLowLevel)
+        if((enabledEffects & 0b000000100) > 0 && level > system.level.data.maxLowLevel)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.FAST_DIGGING,
                     level / hasteLevelMax);
 
         // Jump
-        if((enabledEffects & 0b00000100) > 0)
+        if((enabledEffects & 0b000001000) > 0)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.JUMP,
                     level / jumpLevelMax);
 
         // Fire Resistance
-        if((enabledEffects & 0b00001000) > 0 && entity.getType() != EntityType.IRON_GOLEM)
+        if((enabledEffects & 0b000010000) > 0 && entity.getType() != EntityType.IRON_GOLEM)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.FIRE_RESISTANCE,
                     MathTools.getPotionLevel(1));
 
         // Water Breathing
-        if((enabledEffects & 0b00010000) > 0 && entity.getType() != EntityType.IRON_GOLEM)
+        if((enabledEffects & 0b000100000) > 0 && entity.getType() != EntityType.IRON_GOLEM)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.WATER_BREATHING,
                     MathTools.getPotionLevel(1));
 
         // Health Boost
-        if((enabledEffects & 0b00100000) > 0)
+        if((enabledEffects & 0b001000000) > 0)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.HEALTH_BOOST,
                     level / healthBoostMax);
 
         // Slow Falling
-        if((enabledEffects & 0b01000000) > 0)
+        if((enabledEffects & 0b010000000) > 0)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.SLOW_FALLING,
                     MathTools.getPotionLevel(1));
 
         // Absorbtion
-        if((enabledEffects & 0b10000000) > 0)
+        if((enabledEffects & 0b100000000) > 0)
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.ABSORPTION,
@@ -107,18 +109,20 @@ public class EffectsExtra extends BaseSystem {
         int reversedLevel = system.level.data.maxLowLevel - level;
 
         // Get random effects for 10 potions
-        int enabledEffects = RandomTools.getRandomRange0Inclusive(0b11111111111);
+        int enabledEffects = RandomTools.getRandomRange0Inclusive(0b1111);
+
+        // Skip bit 0
 
         // Slowness
-        if((enabledEffects & 0b0000000001) > 0)
+        if((enabledEffects & 0b0010) > 0)
             system.effects.addPotionEffect(entity, PotionEffectType.SLOW, reversedLevel / slownessLevelMax);
 
         // Fatigue
-        if((enabledEffects & 0b0000000010) > 0)
+        if((enabledEffects & 0b0100) > 0)
             system.effects.addPotionEffect(entity, PotionEffectType.SLOW_DIGGING, reversedLevel / fatigueLevelMax);
 
         // Weakness, 50% chance of 0 or 1
-        if((enabledEffects & 0b0000000100) > 0)
+        if((enabledEffects & 0b1000) > 0)
             system.effects.addPotionEffect(entity, PotionEffectType.WEAKNESS,
                     MathTools.getPotionLevel((RandomTools.getCoinFlip()) ? 1 : 2));
     }
