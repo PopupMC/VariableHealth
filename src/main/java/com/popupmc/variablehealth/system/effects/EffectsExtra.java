@@ -48,7 +48,7 @@ public class EffectsExtra extends BaseSystem {
             system.effects.addPotionEffect(
                     entity,
                     PotionEffectType.SPEED,
-                    MathTools.getPotionLevel((RandomTools.getCoinFlip()) ? 1 : 2));
+                    MathTools.getPotionLevel(RandomTools.getRandomRange1(3)));
 
         // Haste
         if((enabledEffects & 0b000000100) > 0 && level > system.level.data.maxLowLevel)

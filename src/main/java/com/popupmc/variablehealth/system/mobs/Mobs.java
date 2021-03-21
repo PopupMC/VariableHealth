@@ -29,6 +29,8 @@ public class Mobs extends BaseSystem {
         this.zombieSpecific = new ZombieSpecific(system, plugin);
         this.zombieVillagerSpecific = new ZombieVillagerSpecific(system, plugin);
         this.slimeSpecific = new SlimeSpecific(slimeMaxSize, system, plugin);
+        this.rabbitSpecific = new RabbitSpecific(system, plugin);
+        this.shulkerSpecific = new ShulkerSpecific(system, plugin);
     }
 
     public void setup(LivingEntity entity, int level) {
@@ -64,6 +66,12 @@ public class Mobs extends BaseSystem {
 
         if(entity instanceof Slime)
             slimeSpecific.slimeSetup((Slime) entity, level);
+
+        if(entity instanceof Rabbit)
+            rabbitSpecific.setupRabbit((Rabbit)entity, level);
+
+        if(entity instanceof Shulker)
+            shulkerSpecific.shulkerSetup((Shulker)entity, level);
     }
 
     public final CreeperSpecific creeperSpecific;
@@ -77,4 +85,6 @@ public class Mobs extends BaseSystem {
     public final ZombieSpecific zombieSpecific;
     public final ZombieVillagerSpecific zombieVillagerSpecific;
     public final SlimeSpecific slimeSpecific;
+    public final RabbitSpecific rabbitSpecific;
+    public final ShulkerSpecific shulkerSpecific;
 }

@@ -20,11 +20,15 @@ public class CreeperSpecific extends BaseSystem {
     }
 
     public int getCreeperExplosionRadius(int level) {
-        return (int)RandomTools.addNoiseClamp((double)level / (double)creeperExplosionMaxRadius, 0, creeperExplosionMaxRadius);
+        return level / creeperExplosionMaxRadius;
     }
 
     public int getCreeperFuseMaxTime(int level) {
-        return (int)RandomTools.addNoiseClamp((double)level / (double)creeperFuseMaxTime, 0, creeperFuseMaxTime);
+        int fuseTime = (int)RandomTools.addNoise((double)level / (double)creeperFuseMaxTime);
+        if(fuseTime < 0)
+            fuseTime = 0;
+
+        return fuseTime;
     }
 
     public boolean getCreeperPowered(int level) {

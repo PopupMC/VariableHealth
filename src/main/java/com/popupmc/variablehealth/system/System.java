@@ -10,11 +10,16 @@ import com.popupmc.variablehealth.system.effects.Effects;
 import com.popupmc.variablehealth.system.level.Level;
 import com.popupmc.variablehealth.system.mobs.Mobs;
 import com.popupmc.variablehealth.system.scaling.Scale;
+import com.popupmc.variablehealth.system.spawns.Spawns;
+import com.popupmc.variablehealth.utility.LocationTools;
 import com.popupmc.variablehealth.utility.RandomTools;
 import com.popupmc.variablehealth.utility.StringTools;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Tameable;
+import org.bukkit.Location;
+import org.bukkit.entity.*;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class System extends BaseClass {
     public System(int maxLevel,
@@ -80,6 +85,8 @@ public class System extends BaseClass {
                 slimeMaxSize,
                 this,
                 plugin);
+
+        this.spawns = new Spawns(this, plugin);
     }
 
     public boolean doesApply(LivingEntity entity) {
@@ -169,6 +176,9 @@ public class System extends BaseClass {
         // Store Level onto entity
         if(!this.level.meta.hasLevel(entity))
             this.level.meta.storeLevel(entity, level);
+
+        // Check to see if we need to spawn mobs/animals
+        this.spawns.checkSpawn(entity);
     }
 
     public final Level level;
@@ -176,4 +186,5 @@ public class System extends BaseClass {
     public final Boss boss;
     public final Effects effects;
     public final Mobs mobs;
+    public final Spawns spawns;
 }

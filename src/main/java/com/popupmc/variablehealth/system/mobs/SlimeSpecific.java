@@ -22,7 +22,7 @@ public class SlimeSpecific extends BaseSystem {
 
         // If we don't include this then slimes will always multiply indefinately leading to a server
         // crash
-        if(!RandomTools.getRandomChanceDown(10))
+        if(!RandomTools.getRandomChanceDown(15))
             return;
 
         slime.setSize(level / slimeMaxSize);
